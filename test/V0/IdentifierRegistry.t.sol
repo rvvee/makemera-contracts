@@ -59,10 +59,11 @@ contract IdentifierRegistryTest is Test {
     }
 
     function test_RegisterType_RevertsWhenNotAdmin() public {
+        bytes32 role = registry.ADMIN_ROLE();
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, registry.ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, role
             )
         );
         registry.registerType(TYPE_ID, TIER, verifier);
@@ -112,13 +113,14 @@ contract IdentifierRegistryTest is Test {
     }
 
     function test_SetStatus_RevertsWhenNotAdmin() public {
+        bytes32 role = registry.ADMIN_ROLE();
         vm.prank(admin);
         registry.registerType(TYPE_ID, TIER, verifier);
 
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, registry.ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, role
             )
         );
         registry.setStatus(TYPE_ID, false);
@@ -158,13 +160,14 @@ contract IdentifierRegistryTest is Test {
     }
 
     function test_SetVerifier_RevertsWhenNotAdmin() public {
+        bytes32 role = registry.ADMIN_ROLE();
         vm.prank(admin);
         registry.registerType(TYPE_ID, TIER, verifier);
 
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, registry.ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, role
             )
         );
         registry.setVerifier(TYPE_ID, makeAddr("newVerifier"));
