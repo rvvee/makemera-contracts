@@ -53,8 +53,8 @@ contract PassportFactory {
     ) external returns (uint256 tokenId) {
         if (!identifierRegistry.statusOf(typeId)) revert IdentifierTypeInactive(typeId);
 
-        nullifierRegistry.register(typeId, nullifier);
         if (!verifierRouter.verify(typeId, nullifier, proof, publicInputs)) revert VerificationFailed(typeId);
+        nullifierRegistry.register(typeId, nullifier);
 
         tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI);
 
