@@ -9,4 +9,9 @@ interface IVerifierRouter {
         external
         view
         returns (bool);
+
+    function verifyManufacturer(uint8 typeId, bytes32 manufacturerId, bytes32 nullifier, bytes calldata sig)
+        external
+        view
+        returns (bool);
 }

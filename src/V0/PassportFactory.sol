@@ -60,4 +60,28 @@ contract PassportFactory {
 
         emit PassportCreated(typeId, nullifier, to, tokenId);
     }
+
+    /// @notice Verifies a manufacturer-signed device attestation, registers its nullifier, and
+    /// mints the passport NFT.
+    /// @dev Mirrors createPassport but checks a manufacturer signature instead of a ZK proof -
+    /// kept as a separate entry point rather than a typeId branch inside createPassport, so the
+    /// trust path (proof-of-knowledge vs. brand-signed attestation) is determined by which
+    /// function was called, not by inspecting state.
+    function createManufacturerPassport(
+        uint8 typeId,
+        bytes32 manufacturerId,
+        bytes32 nullifier,
+        bytes calldata sig,
+        address to,
+        string calldata metadataURI
+    ) external returns (uint256 tokenId) {
+        if (!identifierRegistry.statusOf(typeId)) revert IdentifierTypeInactive(typeId);
+
+        if (!verifierRouter.verifyManufacturer(typeId, manufacturerId, nullifier, sig)) revert VerificationFailed(typeId);
+        nullifierRegistry.register(typeId, nullifier);
+
+        tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI);
+
+        emit PassportCreated(typeId, nullifier, to, tokenId);
+    }
 }
