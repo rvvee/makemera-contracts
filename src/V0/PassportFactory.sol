@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {IIdentifierRegistry} from "./interfaces/IIdentifierRegistry.sol";
 import {IVerifierRouter} from "./interfaces/IVerifierRouter.sol";
-import {IPassportNFT} from "./interfaces/IPassportNFT.sol";
+import {IPassportNFT, IssuanceSource} from "./interfaces/IPassportNFT.sol";
 import {NullifierRegistry} from "./NullifierRegistry.sol";
 
 /// @notice Orchestrates passport creation. Holds no truth of its own - it reads
@@ -19,7 +19,9 @@ contract PassportFactory {
     NullifierRegistry public immutable nullifierRegistry;
     IPassportNFT public immutable passportNFT;
 
-    event PassportCreated(uint8 indexed typeId, bytes32 indexed nullifier, address indexed to, uint256 tokenId);
+    event PassportCreated(
+        uint8 indexed typeId, bytes32 indexed nullifier, address indexed to, uint256 tokenId, IssuanceSource issuedBy
+    );
 
     error ZeroAddress();
     error IdentifierTypeInactive(uint8 typeId);
@@ -56,9 +58,9 @@ contract PassportFactory {
         if (!verifierRouter.verify(typeId, nullifier, proof, publicInputs)) revert VerificationFailed(typeId);
         nullifierRegistry.register(typeId, nullifier);
 
-        tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI);
+        tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI, IssuanceSource.Consumer);
 
-        emit PassportCreated(typeId, nullifier, to, tokenId);
+        emit PassportCreated(typeId, nullifier, to, tokenId, IssuanceSource.Consumer);
     }
 
     /// @notice Verifies a manufacturer-signed device attestation, registers its nullifier, and
@@ -80,8 +82,8 @@ contract PassportFactory {
         if (!verifierRouter.verifyManufacturer(typeId, manufacturerId, nullifier, sig)) revert VerificationFailed(typeId);
         nullifierRegistry.register(typeId, nullifier);
 
-        tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI);
+        tokenId = passportNFT.mint(to, typeId, nullifier, metadataURI, IssuanceSource.Manufacturer);
 
-        emit PassportCreated(typeId, nullifier, to, tokenId);
+        emit PassportCreated(typeId, nullifier, to, tokenId, IssuanceSource.Manufacturer);
     }
 }
