@@ -4,8 +4,8 @@ pragma solidity ^0.8.24;
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import {IIdentifierRegistry} from "./interfaces/IIdentifierRegistry.sol";
+import {IManufacturerRegistry} from "./interfaces/IManufacturerRegistry.sol";
 import {IZKVerifier} from "./interfaces/IZKVerifier.sol";
-import {ManufacturerRegistry} from "./ManufacturerRegistry.sol";
 
 /// @notice Routes proof verification to the correct verifier by typeId - a ZK verifier
 /// (consumer path) or a manufacturer signature check (factory-issued path). Holds no truth of
@@ -19,7 +19,7 @@ import {ManufacturerRegistry} from "./ManufacturerRegistry.sol";
 /// misconfiguration.
 contract VerifierRouter {
     IIdentifierRegistry public immutable identifierRegistry;
-    ManufacturerRegistry public immutable manufacturerRegistry;
+    IManufacturerRegistry public immutable manufacturerRegistry;
 
     error ZeroAddress();
     error UnknownIdentifierType(uint8 typeId);
@@ -32,7 +32,7 @@ contract VerifierRouter {
         if (_identifierRegistry == address(0) || _manufacturerRegistry == address(0)) revert ZeroAddress();
 
         identifierRegistry = IIdentifierRegistry(_identifierRegistry);
-        manufacturerRegistry = ManufacturerRegistry(_manufacturerRegistry);
+        manufacturerRegistry = IManufacturerRegistry(_manufacturerRegistry);
     }
 
     /// @notice Verifies a consumer ZK proof for a device identifier. Routes to the verifier
