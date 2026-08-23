@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {IIdentifierRegistry} from "./interfaces/IIdentifierRegistry.sol";
 import {IVerifierRouter} from "./interfaces/IVerifierRouter.sol";
 import {IPassportNFT, IssuanceSource} from "./interfaces/IPassportNFT.sol";
-import {NullifierRegistry} from "./NullifierRegistry.sol";
+import {INullifierRegistry} from "./interfaces/INullifierRegistry.sol";
 
 /// @notice Orchestrates passport creation. Holds no truth of its own - it reads
 /// IdentifierRegistry, routes to VerifierRouter, writes NullifierRegistry, and mints via
@@ -16,7 +16,7 @@ import {NullifierRegistry} from "./NullifierRegistry.sol";
 contract PassportFactory {
     IIdentifierRegistry public immutable identifierRegistry;
     IVerifierRouter public immutable verifierRouter;
-    NullifierRegistry public immutable nullifierRegistry;
+    INullifierRegistry public immutable nullifierRegistry;
     IPassportNFT public immutable passportNFT;
 
     event PassportCreated(
@@ -37,7 +37,7 @@ contract PassportFactory {
 
         identifierRegistry = IIdentifierRegistry(_identifierRegistry);
         verifierRouter = IVerifierRouter(_verifierRouter);
-        nullifierRegistry = NullifierRegistry(_nullifierRegistry);
+        nullifierRegistry = INullifierRegistry(_nullifierRegistry);
         passportNFT = IPassportNFT(_passportNFT);
     }
 
