@@ -34,7 +34,9 @@ typical app code.
 - Branch naming: `feat/<contract-or-feature>`, `fix/<short-desc>`,
   `test/<contract-name>`
 - Commit format: Conventional Commits (`feat:`, `fix:`, `test:`, `refactor:`)
-- `forge test` must pass before any commit
+- `forge test` must pass before any commit that changes contract files
+  (`src/**`, `test/**`, `script/**`) — not required for doc-only or config-only
+  commits
 - Never push directly to `main` — feature branch + PR, even solo
 - Never force-push
 
