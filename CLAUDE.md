@@ -50,6 +50,9 @@ typical app code.
 
 ## Related docs
 
-- `About.md` — full product context and legal constraints
-- `codebase.md` — repo topology and dependency flow (authoritative for structure)
-- `CHAIN_SELECTION.md` — why Base, don't relitigate without reading this first
+These live one level up, outside this repo (not tracked/pushed here):
+
+- `../About.md` — full product context and legal constraints
+- `../codebase.md` — repo topology and dependency flow (authoritative for structure)
+- `../Chain-Selection.md` — why Base, don't relitigate without reading this first
+- `../solidity-concepts-reference.md` — Solidity concept notes
